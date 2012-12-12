@@ -1,0 +1,157 @@
+<!Doctype html>
+<html>
+	<head>
+		<title></title>
+		<meta content="">
+		<style>
+		#control{ 
+			position:absolute;
+			width:80%;
+			height:60%;
+			top:10%;
+			left:10%;
+			bottom:20%;
+			padding-right:2%;
+			padding-bottom:0;
+			background-color:transparent;
+			z-index:3;
+/* 			border:thin solid black; */
+		}
+/*		#control:hover{
+			left:0%;
+			min-height:100px;
+			z-index:3;
+		}*/
+		#control #in_control{
+			background-color:red;
+		}
+		#vid{
+			position:absolute;
+			top:0%;
+			left:0%;
+			width:100%;
+			height:100%;
+			background-color:yellow;
+			z-index:0;
+		}
+		#advice
+		{
+			font-size:1.5em;
+			position:absolute;
+			top:40%;
+			left:0%;
+			z-index:1;
+		}
+		#text
+		{
+			width:100%;
+			height:80%;
+		}
+		.media
+		{
+			width:80%;
+			height:80%;
+			top:10%;
+			left:10%;
+			border:none;
+			z-index:2;
+			background-color:white;
+		}
+		
+		
+		</style>
+		<script src="cookieStore.js" type="text/javascript"></script>
+		<script type="text/javascript">
+			<!--
+			
+			var uuid="670702f9-1961-4d67-a2d5-c29665953238";
+					
+			var lS = function(){
+				var uA = window.navigator.userAgent;
+				if (window.localStorage && !(uA.match(/Firefox\//) && parseInt(uA.match(/Firefox\/(\d*)/)[1])<=4))
+					return window.localStorage;
+				else
+					return new cookieStore();
+			}();
+			function save()
+			{ 
+					var store = new function(){};
+					store.lastrequest = document.getElementById('text').value;
+					store.language_de=document.getElementById('language_de').checked;
+					store.language_fr=document.getElementById('language_fr').checked;
+					lS.setItem(uuid,JSON.stringify(store));
+				
+			}
+			function load()
+			{
+					if(lS.getItem(uuid))
+					{
+						var store = JSON.parse(lS.getItem(uuid));
+						if("lastrequest" in store)
+						 document.getElementById('text').value=store.lastrequest;
+						if("language_de" in store)
+						 document.getElementById('language_de').checked=store.language_de;
+						if("language_fr" in store)
+						 document.getElementById('language_fr').checked=store.language_fr;
+					}
+			}
+
+			function go()
+			{
+				save();
+				
+				var url='http://translate.google.com/translate_tts?'
+				var intext=document.getElementById('text').value
+				intext=intext.replace(/[\n\r\s]+/g,' ');
+				url += 'q=' + escape(intext);
+				
+				var attributes="";
+// 				var domain = url.match(/http:\/\/([^\/]*)/)[1]; //getdomain
+				var url_extra="",attributes_extra="";
+				if(document.getElementById('language_de').checked)
+				{
+					url_extra = "&tl=de"
+				}else if(document.getElementById('language_fr').checked)
+				{
+					url_extra = "&tl=fr"
+				}else
+				{
+					url_extra = "&tl=en"
+				}
+				
+				url += url_extra
+				attributes += attributes_extra
+				
+// 				document.getElementById('vid').innerHTML='<embed class="media" src="'+url+'" '+attributes+' quality="high" type="audio/mpeg" />';
+				document.getElementById('vid').innerHTML='<video class="media" controls="" autoplay="" style="margin: auto; position: absolute; top: 0; right: 0; bottom: 0; left: 0;" name="media" src="'+url+'"></video><br /><a href="'+url+'" type="download">Download</a>';
+				return false;
+			};
+			
+			function onl(){
+				load();
+			};
+			//-->
+		</script>
+	</head>
+	<body onload=onl()>
+		<div id='control'>
+			<div id='in_control'>
+				<a href="javascript:load()">Load</a>	<a href="javascript:save()">Save</a>
+				<form action="fullscreen.htm" onSubmit="go(); return false;">
+					<textarea id="text"></textarea><br/>
+					<input id='language_de' type="checkbox" value="language_de"> Deutsch
+					<input id='language_fr' type="checkbox" value="language_fr"> Französisch
+					<br/>
+					<input id='reset' type="reset" value="Reset" style="width:50%;height:(20%-1em);font-size:130%;" /><input id='enter' type="button" value="Enter" onclick="go()" style="width:50%;height:(20%-1em);font-size:130%;" />
+				</form>
+			</div>
+		</div>
+		<div id='vid'>
+			<div id='advice'>
+			move your Mouse-pointer to the left edge of the window to see the control panel.<br />
+			&lt;--- here, hier<br />
+			bewege deine Maus an den linken Fensterrand um das Kontrollpanel zu sehen<br /> 
+			</div>
+		</div>
+</body>
+</html>

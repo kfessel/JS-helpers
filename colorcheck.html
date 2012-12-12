@@ -1,0 +1,25 @@
+<!Doctype html>
+<html>
+<head>
+<title>Farbcheck</title>
+<script type="text/javascript">
+function colorupdate()
+{
+	document.getElementById('colorbox').style['background-color']=document.getElementById('code').value;
+	
+}
+</script>
+</head>
+<body onload="colorupdate()">
+<input id='code' type="text" name="VHex" size="32" oninput="javascript:colorupdate()" onchange="javascript:colorupdate()" value='#f04' />
+<div style="position: relative;width:32ex;height:32ex;" id="colorbox"> </div> 
+<pre>
+Examples
+#RRGGBB #ff0044
+#RGB    #f04
+rgb(r,g,b) [r g b] = 0..255 or 0% .. 100%  rgb(255,0,64) , rgb(100%,0%,25%)
+ColorNames red blue ...
+SystemColor Highlight ActiveBorder Scrollbar ...
+</pre>
+</body>
+</html>

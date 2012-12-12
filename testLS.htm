@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<script src="cookieStore.js" type="text/javascript"></script>
+	<script type="text/javascript">
+	var lS = function(){
+		var uA = window.navigator.userAgent;
+		if (window.localStorage && !(uA.match(/Firefox\//) && parseInt(uA.match(/Firefox\/(\d*)/)[1])<=4))
+			return window.localStorage;
+		else
+			return new cookieStore();
+	}();
+
+	function refresh()
+	{
+	}
+		
+	
+	function save() {
+		//alert(lS);
+		var key = document.getElementById('key').value;
+		var data = document.getElementById('data').value;
+		
+		lS.setItem(key, data);
+	}
+	function read() {
+		var key = document.getElementById('key').value;
+		document.getElementById('data').value = lS.getItem(key);
+	}
+	function read() {
+		var key = document.getElementById('key').value;
+		document.getElementById('data').value = lS.getItem(key);
+	}
+	</script>
+</head>
+<body>
+	<textarea id="data"></textarea>
+	<p>
+		<label>key: <input id="key"></label>
+		<input type="button" value="Read" onclick="read()">
+		<input type="button" value="Store" onclick="save()">
+	</p>
+</body>
+</html>

@@ -1,0 +1,72 @@
+<!Doctype html> 
+<html>
+<title>Regex Runner</title>
+<style>
+*{margin:1 0 1 0;}
+body{margin:auto;min-width:800px;width:80%;min-height:800px;}
+
+textarea{display:block;width:100%;height:40%;/*border:2px solid;*/ }
+#expr{width:65%}
+#expr_mode{width:5%}
+#replace{width:65%}
+#separator{width:5%}
+#step{width:100%}
+label{display:inline-block;width:15%}
+</style>
+<script>
+function str_eval(s)
+{
+  return eval('"'+s+'"')
+}
+function check()
+{ var ret=true;
+  if(!document.getElementById("in").value){
+    document.getElementById("in").style['border-color']="red";
+    ret = false;
+    
+  } else document.getElementById("in").style['border-color']="black"
+
+  if(!document.getElementById("expr").value){
+    document.getElementById("expr").style['border-color']="red"
+    ret = false;
+    
+  }else document.getElementById("expr").style['border-color']="black"
+
+  return ret;
+  
+}
+function run()
+{
+  if(!check()) return;
+  var ind = document.getElementById("in").value;
+  var expr = RegExp(document.getElementById("expr").value,document.getElementById("expr_mode").value);
+  if(!document.getElementById("replace").value){
+    var out  = ind.match(expr);
+    var out  = out?out:Array("");
+    var outd=""
+    var separator = document.getElementById("separator").value;
+    var separator = str_eval(separator);
+    for(var i=0;i<out.length;i++) outd += out[i]+separator;
+    document.getElementById("out").value=outd;
+  }else{    
+    var out  = ind.replace(expr,str_eval(document.getElementById("replace").value));
+    document.getElementById("out").value=out;
+  }
+}
+</script>
+<body>
+<h1>Regex Runner</h1>
+Eingabe 
+<textarea id=in onchange='run()' required>
+</textarea>
+Verarbeitung
+<div>
+  <label>Regulärer Ausdruck</label><input id="expr" type="text" oninput='run()' onchange='run()' required /><label>Modus</label><input id="expr_mode" type="text" onchange='run()' value="igm" /><br />
+  <label>Ersatz</label><input id="replace" type="text" oninput='run()' onchange='run()' /><label>Trennzeichen</label><input id="separator" type="text" onchange='run()' value="\n" />
+</div> 
+Ausgabe
+<textarea id=out />
+</textarea>
+<button id="step" accesskey="S" value="Ausgabe zu Eingabe ALT + S" onclick="document.getElementById('in').value=document.getElementById('out').value">Ausgabe zu Eingabe (ALT + S)</button>
+</div>
+</html>
