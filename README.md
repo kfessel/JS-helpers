@@ -10,9 +10,11 @@ cookieStore.js: a LocalStorage like interface based on a Cookie (10kByte max) (s
 fullscreen.html: embeds videos of some steaming Pages to show them fullscreen (fullpage)
 urlrewrite.js: helper script for fullscreen.htm tries to guess the embed-url from the page url
 
-sagsmitgoogle.htm: used the googletranslator TTS to say something (~100 characters max)
-testLS.htm: test LocalStorage and cookieStorrage
+sagsmitgoogle.html: used the googletranslator TTS to say something (~100 characters max)
+testLS.html: test LocalStorage and cookieStorrage
 
 regexfilter.html: filters some texts using JavaScript regular-expressions
     evaluation while u type (Attention: RegEx may cause huge CPU load)
     copy output to input on request (filter -> replace)
+
+http://fesselk.github.com/JS-helpers

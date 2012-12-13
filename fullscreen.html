@@ -4,12 +4,15 @@
 		<title></title>
 		<meta content="">
 		<style>
+		* {box-sizing: border-box}
+		html, body, form{ height:100%; width:100%;}
 		#control{ 
 			position:absolute;
 			width:80%;
 			height:60%;
+			min-height:100px;
 			top:20%;
-			left:-80%;
+			left:-78%;
 			padding-right:2%;
 			padding-bottom:0;
 			background-color:transparent;
@@ -18,10 +21,12 @@
 		}
 		#control:hover{
 			left:0%;
-			min-height:100px;
 			z-index:3;
 		}
 		#control:hover #in_control{
+			margin:auto 0 auto 0;
+			width:95%;
+			height:90%;
 			background-color:red;
 		}
 		#vid{
@@ -43,7 +48,7 @@
 		}
 		#inurl
 		{
-			width:100%;
+			width:99%;
 			height:80%;
 		}
 		.media
