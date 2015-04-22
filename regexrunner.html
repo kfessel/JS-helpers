@@ -43,37 +43,56 @@ function check(){
 }
 function run(){
   if(!check() || !( document.getElementById("autotrigger").checked==true || document.getElementById("goButton").checked==true )) return;
+  
   var ind = document.getElementById("in").value;
-  var expr = RegExp(document.getElementById("expr").value,document.getElementById("expr_mode").value);
-  if(!document.getElementById("replace").value){
-    var out  = ind.match(expr);
-    var out  = out?out:Array("");
-    var outd=""
-    var separator = document.getElementById("separator").value;
-    var separator = str_eval(separator);
-    for(var i=0;i<out.length;i++) outd += out[i]+separator;
-    document.getElementById("out").value=outd;
-  }else{    
-    var out  = ind.replace(expr,str_eval(document.getElementById("replace").value));
-    document.getElementById("out").value=out;
+  function process (ind){
+      var expr = RegExp(document.getElementById("expr").value,document.getElementById("expr_mode").value);
+      var out = ""
+      if(!document.getElementById("replace").value){
+        var outa  = ind.match(expr);
+        outa  = outa?outa:Array("");
+        var separator = document.getElementById("separator").value;
+        var separator = str_eval(separator);
+        for(var i=0;i<outa.length;i++) out += outa[i]+separator;
+      }else{    
+        out  = ind.replace(expr,str_eval(document.getElementById("replace").value));
+      }
+      return out;
   }
+  if(ind.length>=1024){
+    // using built-in methods
+    var start = new Date();
+    process(ind.substr(0,128));
+    var end = new Date();
+    var elapsed1 = end.getTime() - start.getTime(); // elapsed time in milliseconds
+    // using built-in methods
+    var start = new Date();
+    process(ind.substr(0,1024));
+    var end = new Date();
+    var elapsed2 = end.getTime() - start.getTime(); // elapsed time in milliseconds
+    
+    
+  }
+  
+  
+  document.getElementById("out").value=process(ind); 
 }
 </script>
 <body>
 <h1>Regex Runner</h1>
-Eingabe 
+Input
 <textarea id=in onchange='run()' spellcheck=false required>
 </textarea>
-Verarbeitung
+Process
 <div>
-  <label>Regulärer Ausdruck</label><input id="expr" type="text" oninput='run()' onchange='run()' spellcheck=false  required /><label>Modus</label><input id="expr_mode" type="text" onchange='run()' spellcheck=false  value="igm" /><br />
-  <label>Ersatz</label><input id="replace" type="text" oninput='run()' onchange='run()' spellcheck=false  /><label>Trennzeichen</label><input id="separator" type="text" onchange='run()' value="\n" spellcheck=false  /><br />
-  <label>Autorun</label><input id="autotrigger" type=checkbox checked=true /><input id="goButton" type=button onclick='var ar=document.getElementById("autotrigger"); var arst=ar.checked; ar.checked=true ;run();ar.checked=arst' accesskey="R"  value="Run ALT + R" />
+  <label>Regular Expression</label><input id="expr" type="text" oninput='run()' onchange='run()' spellcheck=false  required /><label>Mode</label><input id="expr_mode" type="text" onchange='run()' spellcheck=false  value="igm" /><br />
+  <label>Replacement</label><input id="replace" type="text" oninput='run()' onchange='run()' spellcheck=false  /><label>Seperator</label><input id="separator" type="text" onchange='run()' value="\n" spellcheck=false  /><br />
+  <label>Autotrigger</label><input id="autotrigger" type=checkbox checked=true /><input id="goButton" type=button onclick='var ar=document.getElementById("autotrigger"); var arst=ar.checked; ar.checked=true ;run();ar.checked=arst' accesskey="R"  value="Run ALT + R" />
 </div> 
-Ausgabe
+Output
 <textarea id=out spellcheck=false  />
 </textarea>
-<button id="step" accesskey="S" value="Ausgabe zu Eingabe ALT + S" onclick="document.getElementById('in').value=document.getElementById('out').value">Ausgabe zu Eingabe (ALT + S)</button>
+<button id="step" accesskey="S" value="Output to Input (ALT + S)" onclick="document.getElementById('in').value=document.getElementById('out').value">Output to Input (ALT + S)</button>
 </div>
 <div id="help">
   <h1>Help</h1>
@@ -81,7 +100,7 @@ Ausgabe
 Modes: m multiline i ignore case g global
 
 . match any Symbol but New Line
-^ Begin of Input or Line $ End of Input or Line
+^ Begin of Input or Line $ End of Input or Line 
 [abc] match either a,b or c
 [^abc] match any Symbol but  a,b or c
 c{n,m} match c n to m times without m its infinit
@@ -109,7 +128,7 @@ str1|str2 match either str1 or str2
 \xHH match character at hexadecimal codepoint HH
 \uHHHH match character at hexadecimal codepoint HHHH
 \0 matches NUL but \0OOO codes character octal
-
+  
 by Default the Regex is Processed after every change in one of the processing fields
 turn this Autotrigger off if you write complex Regex or process huge Inputs
 red borders show missing inputs
@@ -117,8 +136,7 @@ non empty Replace field > replace
 empty Replace field     > match
 
 
-
-
+    
   </pre>
 </div>
 </body>
