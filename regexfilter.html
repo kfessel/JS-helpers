@@ -1,4 +1,4 @@
-<!Doctype html> 
+<!Doctype html>
 <html>
 <title>Regex Runner</title>
 <style>
@@ -12,7 +12,9 @@ textarea{display:block;width:100%;height:40%;/*border:2px solid;*/ }
 #expr_mode{width:5%}
 #replace{width:65%}
 #separator{width:5%}
-#step{width:100%}
+#step{width:29%}
+#goButton{width:29%}
+#autotrigger{margin: 0 1em 0 0em;}
 label{display:inline-block;width:15%}
 #help{position:fixed;width:50%;right:-45%;height:80%;top:10%; border:solid;overflow:auto;}
 #help pre{display:none;}
@@ -29,51 +31,72 @@ function check(){
   if(!document.getElementById("in").value){
     document.getElementById("in").style['border-color']="red";
     ret = false;
-    
+
   } else document.getElementById("in").style['border-color']="black"
 
   if(!document.getElementById("expr").value){
     document.getElementById("expr").style['border-color']="red"
     ret = false;
-    
+
   }else document.getElementById("expr").style['border-color']="black"
 
   return ret;
-  
+
 }
 function run(){
   if(!check() || !( document.getElementById("autotrigger").checked==true || document.getElementById("goButton").checked==true )) return;
+
   var ind = document.getElementById("in").value;
-  var expr = RegExp(document.getElementById("expr").value,document.getElementById("expr_mode").value);
-  if(!document.getElementById("replace").value){
-    var out  = ind.match(expr);
-    var out  = out?out:Array("");
-    var outd=""
-    var separator = document.getElementById("separator").value;
-    var separator = str_eval(separator);
-    for(var i=0;i<out.length;i++) outd += out[i]+separator;
-    document.getElementById("out").value=outd;
-  }else{    
-    var out  = ind.replace(expr,str_eval(document.getElementById("replace").value));
-    document.getElementById("out").value=out;
+  function process (ind){
+    var expr = RegExp(document.getElementById("expr").value,document.getElementById("expr_mode").value);
+    var out = ""
+    if(!document.getElementById("replace").value){
+      var outa  = ind.match(expr);
+      outa  = outa?outa:Array("");
+      var separator = document.getElementById("separator").value;
+      var separator = str_eval(separator);
+      for(var i=0;i<outa.length;i++) out += outa[i]+separator;
+    }else{
+      out  = ind.replace(expr,str_eval(document.getElementById("replace").value));
+    }
+    return out;
   }
+  if(ind.length>=1024){
+    // using built-in methods
+    var start = new Date();
+    process(ind.substr(0,128));
+    var end = new Date();
+    var elapsed1 = end.getTime() - start.getTime(); // elapsed time in milliseconds
+    //check for slow
+    if(elapsed1 > 100) document.getElementById("autotrigger").checked==false;
+
+    // using built-in methods
+    var start = new Date();
+    process(ind.substr(0,1024));
+    var end = new Date();
+    var elapsed2 = end.getTime() - start.getTime(); // elapsed time in milliseconds
+    //check for exponetial
+    if(elapsed2/elapsed1 > 15) document.getElementById("autotrigger").checked==false;
+
+  }
+
+  document.getElementById("out").value=process(ind);
 }
 </script>
 <body>
 <h1>Regex Runner</h1>
-Eingabe 
+Input
 <textarea id=in onchange='run()' spellcheck=false required>
 </textarea>
-Verarbeitung
+Process
 <div>
-  <label>Regulärer Ausdruck</label><input id="expr" type="text" oninput='run()' onchange='run()' spellcheck=false  required /><label>Modus</label><input id="expr_mode" type="text" onchange='run()' spellcheck=false  value="igm" /><br />
-  <label>Ersatz</label><input id="replace" type="text" oninput='run()' onchange='run()' spellcheck=false  /><label>Trennzeichen</label><input id="separator" type="text" onchange='run()' value="\n" spellcheck=false  /><br />
-  <label>Autorun</label><input id="autotrigger" type=checkbox checked=true /><input id="goButton" type=button onclick='var ar=document.getElementById("autotrigger"); var arst=ar.checked; ar.checked=true ;run();ar.checked=arst' accesskey="R"  value="Run ALT + R" />
-</div> 
-Ausgabe
+  <label>Regular Expression</label><input id="expr" type="text" oninput='run()' onchange='run()' spellcheck=false  required /><label>Mode</label><input id="expr_mode" type="text" onchange='run()' spellcheck=false  value="igm" /><br />
+  <label>Replacement</label><input id="replace" type="text" oninput='run()' onchange='run()' spellcheck=false  /><label>Seperator</label><input id="separator" type="text" onchange='run()' value="\n" spellcheck=false  /><br />
+  <label>Autotrigger</label><input id="autotrigger" type=checkbox checked=true /><input id="goButton" type=button onclick='var ar=document.getElementById("autotrigger"); var arst=ar.checked; ar.checked=true ;run();ar.checked=arst' accesskey="R"  value="[R]un" /> <button id="step" accesskey="S" value="Output to Input (ALT + S)" onclick="document.getElementById('in').value=document.getElementById('out').value">Output to Input [S]</button>
+</div>
+Output
 <textarea id=out spellcheck=false  />
 </textarea>
-<button id="step" accesskey="S" value="Ausgabe zu Eingabe ALT + S" onclick="document.getElementById('in').value=document.getElementById('out').value">Ausgabe zu Eingabe (ALT + S)</button>
 </div>
 <div id="help">
   <h1>Help</h1>
@@ -116,10 +139,13 @@ red borders show missing inputs
 non empty Replace field > replace
 empty Replace field     > match
 
-
-
+accesskey usage:
+Firefox: [Alt] + [Shift] + [key]
+Chrome and Co: [Alt] + [key]
+Mac: [Control] + [Alt] + [key]
 
   </pre>
 </div>
 </body>
 </html>
+
