@@ -50,14 +50,16 @@ function run(){
   function process (ind){
     var expr = RegExp(document.getElementById("expr").value,document.getElementById("expr_mode").value);
     var out = ""
-    if(!document.getElementById("replace").value){
+    if(document.getElementById("replace").value) {
+      out  = ind.replace(expr,str_eval(document.getElementById("replace").value));
+    }else if(document.getElementById("delete").checked){
+      out  = ind.replace(expr,"")
+    }else {
       var outa  = ind.match(expr);
       outa  = outa?outa:Array("");
       var separator = document.getElementById("separator").value;
       var separator = str_eval(separator);
       for(var i=0;i<outa.length;i++) out += outa[i]+separator;
-    }else{
-      out  = ind.replace(expr,str_eval(document.getElementById("replace").value));
     }
     return out;
   }
@@ -92,7 +94,7 @@ Process
 <div>
   <label>Regular Expression</label><input id="expr" type="text" oninput='run()' onchange='run()' spellcheck=false  required /><label>Mode</label><input id="expr_mode" type="text" onchange='run()' spellcheck=false  value="igm" /><br />
   <label>Replacement</label><input id="replace" type="text" oninput='run()' onchange='run()' spellcheck=false  /><label>Seperator</label><input id="separator" type="text" onchange='run()' value="\n" spellcheck=false  /><br />
-  <label>Autotrigger</label><input id="autotrigger" type=checkbox checked=true /><input id="goButton" type=button onclick='var ar=document.getElementById("autotrigger"); var arst=ar.checked; ar.checked=true ;run();ar.checked=arst' accesskey="R"  value="[R]un" /> <button id="step" accesskey="S" value="Output to Input (ALT + S)" onclick="document.getElementById('in').value=document.getElementById('out').value">Output to Input [S]</button>
+  <label>Autotrigger</label><input id="autotrigger" type=checkbox checked=true /><input id="goButton" type=button onclick='var ar=document.getElementById("autotrigger"); var arst=ar.checked; ar.checked=true ;run();ar.checked=arst' accesskey="R"  value="[R]un" /> <button id="step" accesskey="S" value="Output to Input (ALT + S)" onclick="document.getElementById('in').value=document.getElementById('out').value">Output to Input [S]</button><label>delete</label><input id="delete" type=checkbox oninput='run()' onchange='run()' checked=false />
 </div>
 Output
 <textarea id=out spellcheck=false  />
