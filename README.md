@@ -17,4 +17,4 @@ regexfilter.html: filters some texts using JavaScript regular-expressions
     evaluation while u type (Attention: RegEx may cause huge CPU load)
     copy output to input on request (filter -> replace)
 
-http://kfessel.github.com/JS-helpers
+http://kfessel.github.io/JS-helpers
